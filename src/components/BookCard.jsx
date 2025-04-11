@@ -48,10 +48,10 @@ const BookCard = ({ book, onWishlistUpdate }) => {
                 />
 
                 <div className="w-full p-3 pt-2 flex flex-col gap-1 text-sm text-gray-600">
-                    <h3 className="text-base text-black font-bold line-clamp-2">{book?.title}</h3>
+                    <h3 className="text-base text-black font-bold">{book?.title}</h3>
                     <p>Author: {book?.authors?.[0]?.name ?? "N/A"}</p>
                     <p>Genre: {book?.subjects?.[0] ?? "N/A"}</p>
-                    <p className="text-xs text-gray-400">ID: {book?.id}</p>
+                    <p>ID: {book?.id}</p>
                 </div>
             </Link>
         </div>

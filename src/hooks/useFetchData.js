@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 
-const baseUrl = 'https://gutendex.com';
-
 const useFetchData = (url) => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(false);
@@ -12,7 +10,7 @@ const useFetchData = (url) => {
         setLoading(true);
 
         try {
-            const res = await fetch(`${baseUrl}/${url}`);
+            const res = await fetch(`${import.meta.env.VITE_BASE_URL}/${url}`);
             if (!res.ok) {
                 setError(true);
                 return;

@@ -4,53 +4,50 @@ import Title from "../components/Title";
 import BookList from "../components/BookList";
 import useFetchData from "../hooks/useFetchData";
 import Pagination from "../components/Pagination";
+import BookFilters from "../components/BookFilters";
 import NotFoundMessage from "../components/NotFoundMessage";
 
 const Home = () => {
     const [page, setPage] = useState(1);
-    const [genre, setGenre] = useState("");
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useState(localStorage.getItem("searchTerm") || "");
+    const [genre, setGenre] = useState(localStorage.getItem("selectedGenre") || "");
 
     const { loading, error, data } = useFetchData(`books?page=${page}`);
 
+    const onChange = (e) => {
+        const { name, value } = e.target;
+
+        if (name === 'search') {
+            setSearch(value);
+            localStorage.setItem("searchTerm", value);
+        }
+
+        if (name === 'genre') {
+            setGenre(value);
+            localStorage.setItem("selectedGenre", value);
+        }
+    };
+
     const filteredBooks = data?.results?.filter((book) => {
-        const titleMatch = book.title.toLowerCase().includes(search.toLowerCase());
-        const genreMatch = genre
+        const matchesSearch = book.title.toLowerCase().includes(search.toLowerCase());
+        const matchesGenre = genre
             ? book.subjects?.some((s) =>
                 s.toLowerCase().includes(genre.toLowerCase())
             )
             : true;
-        return titleMatch && genreMatch;
+
+        return matchesSearch && matchesGenre;
     });
 
     return (
-        <div className="w-full flex flex-col gap-6">
+        <div className="w-full h-full flex flex-col gap-7">
             <div className="w-full flex flex-col md:flex-row justify-between items-center gap-4">
                 <Title title="Book List" className="w-full md:w-1/2" />
-
-                {/* filters */}
-                <div className="w-full md:w-1/2 flex flex-col md:flex-row gap-4">
-                    <input
-                        type="text"
-                        name="search"
-                        value={search}
-                        placeholder="Search by title..."
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="w-full border py-2 px-3 rounded"
-                    />
-                    <select
-                        name="genre"
-                        value={genre}
-                        onChange={(e) => setGenre(e.target.value)}
-                        className="w-full border py-2 px-3 rounded"
-                    >
-                        <option value="">All Genres</option>
-                        <option value="fiction">Fiction</option>
-                        <option value="history">History</option>
-                        <option value="science">Science</option>
-                        <option value="children">Children</option>
-                    </select>
-                </div>
+                <BookFilters
+                    genre={genre}
+                    search={search}
+                    onChange={onChange}
+                />
             </div>
 
             {loading && <p>Loading books...</p>}

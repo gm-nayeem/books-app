@@ -9,7 +9,7 @@ const Book = () => {
     const { id } = useParams();
     const { loading, error, data: book } = useFetchData(`books/${id}`);
 
-    if (loading) return <p className="p-4">Loading...</p>;
+    if (loading) return <p className="p-4">Loading book...</p>;
 
     if (!loading && error) {
         return <NotFoundMessage message="No book found with this ID!" />;
